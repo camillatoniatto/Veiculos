@@ -7,9 +7,10 @@ using Veiculo.Dominio;
 
 namespace Veiculo.Repositorio
 {
-    public class VeiculoDatabase : DbContext
+    public class VeiculoContext : DbContext
     {
-        public VeiculoDatabase(DbContextOptions<VeiculoDatabase> options) : base(options) { }
+        public VeiculoContext(DbContextOptions<VeiculoContext> options) : base(options) { } //manda options para statup.cs
+
         public DbSet<Carro> Carros { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
     }

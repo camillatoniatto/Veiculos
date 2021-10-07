@@ -10,6 +10,8 @@ namespace Veiculo.Dominio
         public int Id { get; set; }
         public DateTime DtInicio { get; set; }
         public DateTime DtFim { get; set; }
+        //eliminar um dos carros, está suplicando no bando de dados
         public Carro Carro { get; set; }
+        public int CarroId { get; set; }
     }
 }
