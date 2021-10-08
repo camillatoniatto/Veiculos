@@ -56,7 +56,6 @@ namespace Veiculos.Controllers
             {
                 return BadRequest($"Erro: {ex}");
             }
-            return BadRequest("Carro não encontrado.");
         }
 
 
