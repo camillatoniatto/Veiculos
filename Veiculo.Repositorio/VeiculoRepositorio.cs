@@ -51,7 +51,7 @@ namespace Veiculo.Repositorio
         public async Task<Carro> GetCarroById(int id)
         {
             IQueryable<Carro> query = _context.Carros;
-         
+
             query = query.AsNoTracking().OrderBy(h => h.Id);
 
             return await query.FirstOrDefaultAsync(h => h.Id == id);
