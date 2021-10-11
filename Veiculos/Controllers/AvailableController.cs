@@ -21,20 +21,22 @@ namespace Veiculos.Controllers
         {
             _context = context;
         }
+        
         // GET: api/<AvailableController>
         /// <summary>
         /// Verificar veículos disponíveis.
         /// </summary>  
         [HttpGet]
-        public async Task<IActionResult> Get(DateTime DtInicio, DateTime DtFim, Reserva model)
+        public async Task<IActionResult> GetAvailableCars(DateTime DtInicio, DateTime DtFim)
         {
             try
-            {               
-                var data = await _context.Reservas.AsNoTracking().Where(d => d.DtInicio > DtInicio && d.DtFim > DtFim).ToListAsync();
-                //if (data)
-               // {
-                    return Ok(data); //model
-               // }
+            {             
+                var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= DtInicio && d.DtFim <= DtFim).ToListAsync(); //verifica os veiculos reservados em x data
+
+                var carrosReservados = listaReservas.Select(r => r.CarroId); //pega carroId dos veiculos reservados em x data
+                var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").ToList(); //compara carroId com Id dos veiculos restantes (IsNotIn)
+
+                return Ok(carrosAvailable);
             }
             catch (Exception ex)
             {
@@ -43,10 +45,3 @@ namespace Veiculos.Controllers
         }
     }
 }
-
-
-
-//where a.Id == p.OID &&
-//       (a.Start.Date >= startDate.Date && a.Start.Date <= endDate)
-// .Where(x => x.CarroId == id)
-//var reservas = await _context.Reservas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
