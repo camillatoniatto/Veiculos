@@ -29,19 +29,22 @@ namespace Veiculos.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAvailableCars(DateTime DtInicio, DateTime DtFim)
         {
-            try
-            {             
-                var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= DtInicio && d.DtFim <= DtFim).ToListAsync(); //verifica os veiculos reservados em x data
-
-                var carrosReservados = listaReservas.Select(r => r.CarroId); //pega carroId dos veiculos reservados em x data
-                var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").ToList(); //compara carroId com Id dos veiculos restantes (IsNotIn)
-
-                return Ok(carrosAvailable);
-            }
-            catch (Exception ex)
+            if (DtInicio < DtFim)
             {
-                return BadRequest($"Erro: {ex}");
+                try
+                {             
+                    var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= DtInicio && d.DtFim <= DtFim).ToListAsync(); //verifica os veiculos reservados em x data
+                    var carrosReservados = listaReservas.Select(r => r.CarroId); //pega carroId dos veiculos reservados em x data
+                    var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").ToList(); //compara carroId com Id dos veiculos restantes (IsNotIn)
+
+                    return Ok(carrosAvailable);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"Erro: {ex}");
+                }
             }
+            return Ok("Data inválida");
         }
     }
 }

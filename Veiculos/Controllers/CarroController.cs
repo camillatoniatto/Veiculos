@@ -69,7 +69,6 @@ namespace Veiculos.Controllers
             try
             {
                 //adiciona o carro no banco de dados
-                var carro = new Carro();
                 _context.Carros.Add(model);
                 _context.SaveChanges();
                 return Ok("Ok");
@@ -86,15 +85,24 @@ namespace Veiculos.Controllers
         /// Alterar carro.
         /// </summary>         
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Carro model)
+        public async Task<IActionResult> Put(int id, Carro model)
         {
             try
-            {
+            {                
                 //atualiza o carro no banco de dados
-                var carro = new Carro();
-                _context.Carros.Update(model);
+                var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                var carroAtt = new Carro()
+                {
+                    Id = carro.Id,
+                    Modelo = model.Modelo != null ? model.Modelo : carro.Modelo,
+                    Ano = model.Ano != 0 ? model.Ano : carro.Ano,
+                    Placa = model.Placa != null ? model.Placa : carro.Placa,
+                    Estado = model.Estado != null ? model.Estado : carro.Estado,
+                };
+
+                _context.Carros.Update(carroAtt);
                 _context.SaveChanges();
-                return Ok(model);
+                return Ok("Editado com sucesso!");
             }
             catch (Exception ex)
             {
@@ -109,11 +117,23 @@ namespace Veiculos.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
+            //var listaReservas = _context.Reservas.Where(d => d.CarroId == id).ToListAsync();
+            
+            //var carro = _context.Carros.Where(carro => carro.Id == id && listaReservas.Contains(carro.CarroId)).Single();
+            //var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").Select(r => r.Id).ToList();
+            //var carroUtlizado = _context.Carros.Select(c => c.Id);
+
+            //var reserva = _context.Reservas.Where(r => r.carroId.Contains(carroId)).ToList();
+            //if (listaReservas)
+            //{
+
+            //}
+
             try
             {
                 //deleta o carro no banco de dados
-                var carro = _context.Carros.Where(carro => carro.Id == id).Single();
 
+                var carro = _context.Carros.Where(carro => carro.Id == id).Single();
                 if (carro != null)
                 {
                     _context.Carros.Remove(carro);

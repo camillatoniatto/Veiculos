@@ -63,39 +63,73 @@ namespace Veiculos.Controllers
         /// Cadastrar reserva.
         /// </summary>   
         [HttpPost]
-            public ActionResult Post(Reserva model)
+        public async Task<IActionResult> Post(Reserva model)
+        {
+            if (model.DtInicio < model.DtFim)
             {
-                try
+                //15/10/2021 
+                //16/10/2021
+                //carId 3
+                var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim && d.CarroId == model.CarroId).ToListAsync();
+                //where dtInicio and dtFim and carId
+                //var carrosReservados = listaReservas.Select(r => r.CarroId);
+                var carrosAvailable = _context.Carros.Where(c => !listaReservas.Contains(model.CarroId) && c.Estado == "available").ToList();
+                //pegar o carId e ver se está available
+                if (carrosAvailable.Contains(model.CarroId))
                 {
-                    var reserva = new Reserva();
-                    _context.Reservas.Add(model);
-                    _context.SaveChanges();
-                    return Ok("Ok");
-                }
-                catch (Exception ex)
-                {
+                    try
+                    {
+                        _context.Reservas.Add(model);
+                        _context.SaveChanges();
+                        return Ok("Reserva feita com sucesso!");
+                    }
+                    catch (Exception ex)
+                    {
                     return BadRequest($"Erro: {ex}");
+                    }
                 }
+                return Ok("Este veículo está reservado \nPor favor verifique os veículos disponíveis em 'GetAvailableCars'");
             }
+        return Ok("Data inválida");
+        }
 
         // PUT api/<ReservaController>/5
         /// <summary>
         /// Alterar reserva.
         /// </summary> 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Reserva model)
+        public async Task<IActionResult> Put(int id, Reserva model)
         {
-            try
+            if (model.DtInicio < model.DtFim)
             {
-                var reserva = new Reserva();
-                _context.Reservas.Update(model);
-                _context.SaveChanges();
-                return Ok(model);
+                var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim).ToListAsync();
+                var carrosReservados = listaReservas.Select(r => r.CarroId);
+                var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").Select(r => r.Id).ToList();
+                if (carrosAvailable.Contains(model.CarroId))
+                {
+                    try
+                    {
+                        var reserva = await _context.Reservas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                        var reservaAtt = new Reserva()
+                        {
+                            Id = reserva.Id,
+                            DtInicio = model.DtInicio != null ? model.DtInicio : reserva.DtInicio,
+                            DtFim = model.DtFim != null ? model.DtFim : reserva.DtFim,
+                            CarroId = model.CarroId != 0 ? model.CarroId : reserva.CarroId,
+                        };
+
+                        _context.Reservas.Update(reservaAtt);
+                        _context.SaveChanges();
+                        return Ok("Editado com sucesso!");
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest($"Erro: {ex}");
+                    }                
+                }
+            return Ok("Este veículo está reservado \nPor favor verifique os veículos disponíveis em 'GetAvailableCars'");
             }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erro: {ex}");
-            }
+        return Ok("Data inválida");
         }
 
         // DELETE api/<ReservaController>/5
