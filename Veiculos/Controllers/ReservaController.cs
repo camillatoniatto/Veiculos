@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Veiculo.Dominio;
 using Veiculo.Repositorio;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
@@ -67,30 +65,30 @@ namespace Veiculos.Controllers
         {
             if (model.DtInicio < model.DtFim)
             {
-                //15/10/2021 
-                //16/10/2021
-                //carId 3
-                var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim && d.CarroId == model.CarroId).ToListAsync();
-                //where dtInicio and dtFim and carId
-                //var carrosReservados = listaReservas.Select(r => r.CarroId);
-                var carrosAvailable = _context.Carros.Where(c => !listaReservas.Contains(model.CarroId) && c.Estado == "available").ToList();
-                //pegar o carId e ver se está available
-                if (carrosAvailable.Contains(model.CarroId))
+                //verifica de o carro existe
+                var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(c => c.Id == model.CarroId);
+                if (carro != null)
                 {
-                    try
+                    var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim && d.CarroId == model.CarroId).Select(d => d.CarroId).ToListAsync();
+                    var carrosAvailable = _context.Carros.Where(c => listaReservas.Contains(c.Id) && c.Estado == "available").ToList();
+                    if (carrosAvailable.Count() == 0)
                     {
-                        _context.Reservas.Add(model);
-                        _context.SaveChanges();
-                        return Ok("Reserva feita com sucesso!");
+                        try
+                        {
+                            _context.Reservas.Add(model);
+                            _context.SaveChanges();
+                            return Ok("Reserva feita com sucesso!");
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest($"Erro: {ex}");
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                    return BadRequest($"Erro: {ex}");
-                    }
+                    return Ok("Este veículo está reservado \nPor favor verifique os veículos disponíveis em 'GetAvailableCars'");
                 }
-                return Ok("Este veículo está reservado \nPor favor verifique os veículos disponíveis em 'GetAvailableCars'");
+                return Ok("O veículo não existe");                
             }
-        return Ok("Data inválida");
+            return Ok("Data inválida");
         }
 
         // PUT api/<ReservaController>/5
@@ -102,34 +100,38 @@ namespace Veiculos.Controllers
         {
             if (model.DtInicio < model.DtFim)
             {
-                var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim).ToListAsync();
-                var carrosReservados = listaReservas.Select(r => r.CarroId);
-                var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").Select(r => r.Id).ToList();
-                if (carrosAvailable.Contains(model.CarroId))
+                var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(c => c.Id == model.CarroId);
+                if (carro != null)
                 {
-                    try
+                    var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim && d.CarroId == model.CarroId).Select(d => d.CarroId).ToListAsync();
+                    var carrosAvailable = _context.Carros.Where(c => listaReservas.Contains(c.Id) && c.Estado == "available").ToList();
+                    if (carrosAvailable.Count() == 0)
                     {
-                        var reserva = await _context.Reservas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                        var reservaAtt = new Reserva()
+                        try
                         {
-                            Id = reserva.Id,
-                            DtInicio = model.DtInicio != null ? model.DtInicio : reserva.DtInicio,
-                            DtFim = model.DtFim != null ? model.DtFim : reserva.DtFim,
-                            CarroId = model.CarroId != 0 ? model.CarroId : reserva.CarroId,
-                        };
+                            var reserva = await _context.Reservas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                            var reservaAtt = new Reserva()
+                            {
+                                Id = reserva.Id,
+                                DtInicio = model.DtInicio != null ? model.DtInicio : reserva.DtInicio,
+                                DtFim = model.DtFim != null ? model.DtFim : reserva.DtFim,
+                                CarroId = model.CarroId != 0 ? model.CarroId : reserva.CarroId,
+                            };
 
-                        _context.Reservas.Update(reservaAtt);
-                        _context.SaveChanges();
-                        return Ok("Editado com sucesso!");
+                            _context.Reservas.Update(reservaAtt);
+                            _context.SaveChanges();
+                            return Ok("Editado com sucesso!");
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest($"Erro: {ex}");
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        return BadRequest($"Erro: {ex}");
-                    }                
+                    return Ok("Este veículo está reservado \nPor favor verifique os veículos disponíveis em 'GetAvailableCars'");
                 }
-            return Ok("Este veículo está reservado \nPor favor verifique os veículos disponíveis em 'GetAvailableCars'");
-            }
-        return Ok("Data inválida");
+                return Ok("O veículo não existe");
+            } 
+            return Ok("Data inválida");
         }
 
         // DELETE api/<ReservaController>/5
@@ -142,7 +144,6 @@ namespace Veiculos.Controllers
             try
             {
                 var reserva = _context.Reservas.Where(reserva => reserva.Id == id).Single();
-
                 if (reserva != null)
                 {
                     _context.Reservas.Remove(reserva);

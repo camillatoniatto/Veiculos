@@ -117,35 +117,28 @@ namespace Veiculos.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            //var listaReservas = _context.Reservas.Where(d => d.CarroId == id).ToListAsync();
-            
-            //var carro = _context.Carros.Where(carro => carro.Id == id && listaReservas.Contains(carro.CarroId)).Single();
-            //var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").Select(r => r.Id).ToList();
-            //var carroUtlizado = _context.Carros.Select(c => c.Id);
+            var listaReservas = _context.Reservas.Where(d => d.CarroId == id).ToList();
 
-            //var reserva = _context.Reservas.Where(r => r.carroId.Contains(carroId)).ToList();
-            //if (listaReservas)
-            //{
-
-            //}
-
-            try
+            if (listaReservas.Count() == 0)
             {
-                //deleta o carro no banco de dados
-
-                var carro = _context.Carros.Where(carro => carro.Id == id).Single();
-                if (carro != null)
+                try
                 {
-                    _context.Carros.Remove(carro);
-                    _context.SaveChanges();
-                    return Ok("Deletado com sucesso!");
+                    //deleta o carro no banco de dados
+                    var carro = _context.Carros.Where(carro => carro.Id == id).Single();
+                    if (carro != null)
+                    {
+                        _context.Carros.Remove(carro);
+                        _context.SaveChanges();
+                        return Ok("Deletado com sucesso!");
+                    }
                 }
+                catch (Exception ex)
+                {
+                    return BadRequest($"Erro: {ex}");
+                }
+                return BadRequest("Carro não encontrado.");
             }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erro: {ex}");
-            }
-            return BadRequest("Carro não encontrado.");
+            return Ok("Você não pode deletar um carro que está reservado");  
         }
     }
 }
