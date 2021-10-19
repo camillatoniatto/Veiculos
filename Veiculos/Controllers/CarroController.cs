@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace Veiculos.Controllers
         /// Obter todos os carros.
         /// </summary>               
         [HttpGet]
+        [Authorize(Roles = "manager,mechanic,support")]
         public async Task<IActionResult> Get()
         {
             try
@@ -43,6 +45,7 @@ namespace Veiculos.Controllers
         /// Obter um carro específico por ID.
         /// </summary>              
         [HttpGet("{id:int}")] //delimita a rota, da erro 404 se colocar um valor q não seja int
+        [Authorize(Roles = "manager,mechanic,support")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -64,6 +67,7 @@ namespace Veiculos.Controllers
         /// Cadastrar carro.
         /// </summary>        
         [HttpPost]
+        [Authorize(Roles = "manager,mechanic,support")]
         public ActionResult Post(Carro model)
         {
             try
@@ -85,6 +89,7 @@ namespace Veiculos.Controllers
         /// Alterar carro.
         /// </summary>         
         [HttpPut("{id}")]
+        [Authorize(Roles = "manager,mechanic")]
         public async Task<IActionResult> Put(int id, Carro model)
         {
             try
@@ -92,6 +97,22 @@ namespace Veiculos.Controllers
                 //atualiza o carro no banco de dados
                 var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
                 var carroAtt = new Carro()
+
+
+                /*
+                foreach (var item in model)
+                {
+                    if (item != null)
+                    {
+                        carroAtt.Add(item);
+                    }
+                    else
+                    {
+                        carroAtt.Add(item.carro);
+                    }
+                }*/
+
+
                 {
                     Id = carro.Id,
                     Modelo = model.Modelo != null ? model.Modelo : carro.Modelo,
@@ -100,9 +121,13 @@ namespace Veiculos.Controllers
                     Estado = model.Estado != null ? model.Estado : carro.Estado,
                 };
 
-                _context.Carros.Update(carroAtt);
-                _context.SaveChanges();
-                return Ok("Editado com sucesso!");
+                if (carroAtt != null)
+                {
+                    _context.Carros.Update(carroAtt);
+                    _context.SaveChanges();
+                    return Ok("Editado com sucesso!");
+                }
+                return Ok(carroAtt);
             }
             catch (Exception ex)
             {
@@ -115,6 +140,7 @@ namespace Veiculos.Controllers
         /// Deletar carro.
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
         {
             var listaReservas = _context.Reservas.Where(d => d.CarroId == id).ToList();

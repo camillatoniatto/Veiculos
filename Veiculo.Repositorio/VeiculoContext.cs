@@ -13,5 +13,6 @@ namespace Veiculo.Repositorio
 
         public DbSet<Carro> Carros { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

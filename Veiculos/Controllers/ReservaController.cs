@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace Veiculos.Controllers
         /// Obter todas as reservas.
         /// </summary>  
         [HttpGet]
+        [Authorize(Roles = "manager,employee,support")]
         public async Task<IActionResult> Get()
         {
             try
@@ -43,6 +45,7 @@ namespace Veiculos.Controllers
         /// Obter uma reserva específica por ID.
         /// </summary>    
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "manager,employee,support")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -61,6 +64,7 @@ namespace Veiculos.Controllers
         /// Cadastrar reserva.
         /// </summary>   
         [HttpPost]
+        [Authorize(Roles = "manager,employee,support")]
         public async Task<IActionResult> Post(Reserva model)
         {
             if (model.DtInicio < model.DtFim)
@@ -69,6 +73,11 @@ namespace Veiculos.Controllers
                 var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(c => c.Id == model.CarroId);
                 if (carro != null)
                 {
+                    //var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim).ToListAsync(); //verifica os veiculos reservados em x data
+                    //var carrosReservados = listaReservas.Select(r => r.CarroId); //pega carroId dos veiculos reservados em x data
+                    //var carrosAvailable = _context.Carros.Where(c => !carrosReservados.Contains(c.Id) && c.Estado == "available").ToList(); //compara carroId com Id dos veiculos restantes (IsNotIn)
+                    //if (carrosAvailable.Contains(model.CarroId))
+
                     var listaReservas = await _context.Reservas.Where(d => d.DtInicio >= model.DtInicio && d.DtFim <= model.DtFim && d.CarroId == model.CarroId).Select(d => d.CarroId).ToListAsync();
                     var carrosAvailable = _context.Carros.Where(c => listaReservas.Contains(c.Id) && c.Estado == "available").ToList();
                     if (carrosAvailable.Count() == 0)
@@ -96,6 +105,7 @@ namespace Veiculos.Controllers
         /// Alterar reserva.
         /// </summary> 
         [HttpPut("{id}")]
+        [Authorize(Roles = "manager,employee")]
         public async Task<IActionResult> Put(int id, Reserva model)
         {
             if (model.DtInicio < model.DtFim)
@@ -139,6 +149,7 @@ namespace Veiculos.Controllers
         /// Deletar reserva.
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
         {
             try

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Veiculos.Controllers
         /// Verificar veículos disponíveis.
         /// </summary>  
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAvailableCars(DateTime DtInicio, DateTime DtFim)
         {
             if (DtInicio < DtFim)

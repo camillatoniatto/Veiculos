@@ -1,7 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3" />
+	  <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.13.1" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	  <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.0" />
+	  <PackageReference Include="Swashbuckle.AspNetCore.Filters.Abstractions" Version="7.0.0" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.13.1" />
+	  <PackageReference Include="System.Security.Claims" Version="4.3.0" />  
+  </ItemGroup>
 
 </Project>
