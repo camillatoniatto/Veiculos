@@ -22,7 +22,7 @@ namespace Veiculos.Controllers
 
         // GET: api/<UserController>
         /// <summary>
-        /// Obter todos os funcionários.
+        /// Obter todos os usuários.
         /// </summary>               
         [HttpGet]
         [Authorize(Roles = "manager")]
@@ -31,6 +31,27 @@ namespace Veiculos.Controllers
             try
             {
                 var users = await _context.Users.ToListAsync();
+                //users.Senha = "";
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro: {ex}");
+            }
+        }
+
+        // GET api/<UserController>/5
+        /// <summary>
+        /// Obter um usuário específico por ID.
+        /// </summary>              
+        [HttpGet("{id:int}")] //delimita a rota, da erro 404 se colocar um valor q não seja int
+        [Authorize(Roles = "manager,support")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var users = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                users.Senha = "";
                 return Ok(users);
             }
             catch (Exception ex)
@@ -41,17 +62,17 @@ namespace Veiculos.Controllers
 
         // POST api/<UserController>
         /// <summary>
-        /// Cadastrar funcionário.
+        /// Cadastrar usuário.
         /// </summary>        
         [HttpPost]
-        [Authorize(Roles = "manager")]
+        [Authorize(Roles = "manager,support")]
         public ActionResult Post(User model)
         {
             try
             {
                 _context.Users.Add(model);
                 _context.SaveChanges();
-                return Ok("Ok");
+                return Ok("Usuário cadastrado com sucesso");
             }
             catch (Exception ex)
             {
@@ -59,6 +80,62 @@ namespace Veiculos.Controllers
             }
         }
 
+        // PUT api/<UserController>/5
+        /// <summary>
+        /// Alterar usuário.
+        /// </summary>         
+        [HttpPut("{id}")]
+        [Authorize(Roles = "manager,support")]
+        public async Task<IActionResult> Put(int id, User model)
+        {
+            try
+            {
+                var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                var userAtt = new User()
+                {
+                    Id = user.Id,
+                    Usuario = model.Usuario != null ? model.Usuario : user.Usuario,
+                    Senha = model.Senha != null ? model.Senha : user.Senha,
+                    Role = model.Role != null ? model.Role : user.Role,
+                };
 
+                if (userAtt != null)
+                {
+                    _context.Users.Update(userAtt);
+                    _context.SaveChanges();
+                    return Ok("Usuário editado com sucesso!");
+                }
+                return Ok(userAtt);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro: {ex}");
+            }
+        }
+
+        // DELETE api/<UserController>/5
+        /// <summary>
+        /// Deletar usuário.
+        /// </summary>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "manager")]
+        public ActionResult Delete(int id)
+        {           
+            try
+            {
+                var user = _context.Users.Where(u => u.Id == id).Single();
+                if (user != null)
+                {
+                    _context.Users.Remove(user);
+                    _context.SaveChanges();
+                    return Ok("Usuário deletado com sucesso!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro: {ex}");
+            }
+        return BadRequest("Usuário não encontrado.");           
+        }
     }
 }
