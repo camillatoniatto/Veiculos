@@ -19,9 +19,9 @@ namespace Veiculo.Dominio
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Usuario.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                    //new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddHours(5),
                 SigningCredentials =
                 new SigningCredentials(
                     new SymmetricSecurityKey(key),

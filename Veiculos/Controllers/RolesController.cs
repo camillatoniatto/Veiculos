@@ -12,17 +12,17 @@ namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class RolesController : ControllerBase
     {
         private readonly VeiculoContext _context;
-        public UserController(VeiculoContext context)
+        public RolesController(VeiculoContext context)
         {
             _context = context;
         }
 
-        // GET: api/<UserController>
+
         /// <summary>
-        /// Obter todos os usuários.
+        /// Obter todas as roles.
         /// </summary>               
         [HttpGet]
         //[Authorize(Roles = "manager")]
@@ -30,9 +30,8 @@ namespace Veiculos.Controllers
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
-                //users.Senha = "";
-                return Ok(users);
+                var roles = await _context.Roles.ToListAsync();
+                return Ok(roles);
             }
             catch (Exception ex)
             {
@@ -40,19 +39,17 @@ namespace Veiculos.Controllers
             }
         }
 
-        // GET api/<UserController>/5
         /// <summary>
-        /// Obter um usuário específico por ID.
+        /// Obter uma role específica por ID.
         /// </summary>              
-        [HttpGet("{id:int}")] //delimita a rota, da erro 404 se colocar um valor q não seja int
+        [HttpGet("{id:int}")]
         //[Authorize(Roles = "manager,support")]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                var users = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                users.Senha = "";
-                return Ok(users);
+                var roles = await _context.Roles.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                return Ok(roles);
             }
             catch (Exception ex)
             {
@@ -60,51 +57,51 @@ namespace Veiculos.Controllers
             }
         }
 
-        // POST api/<UserController>
         /// <summary>
-        /// Cadastrar usuário.
+        /// Cadastrar role.
         /// </summary>        
         [HttpPost]
         //[Authorize(Roles = "manager,support")]
-        public ActionResult Post(User model)
+        public ActionResult Post(Role model)
         {
             try
             {
-                _context.Users.Add(model);
+                _context.Roles.Add(model);
                 _context.SaveChanges();
-                return Ok("Usuário cadastrado com sucesso");
+                return Ok("Nova role adicionada com sucesso");
             }
             catch (Exception ex)
             {
                 return BadRequest($"Erro: {ex}");
             }
-        }
+        }        
 
-        // PUT api/<UserController>/5
         /// <summary>
-        /// Alterar usuário.
+        /// Alterar role.
         /// </summary>         
         [HttpPut("{id}")]
         //[Authorize(Roles = "manager,support")]
-        public async Task<IActionResult> Put(int id, User model)
+        public async Task<IActionResult> Put(int id, Role model)
         {
             try
             {
-                var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                var userAtt = new User()
+                var role = await _context.Roles.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                var roleAtt = new Role()
                 {
-                    Id = user.Id,
-                    Usuario = model.Usuario != null ? model.Usuario : user.Usuario,
-                    Senha = model.Senha != null ? model.Senha : user.Senha,                    
+                    Id = role.Id,                    
+                    RoleName = model.RoleName != null ? model.RoleName : role.RoleName,
                 };
 
-                if (userAtt != null)
+                if (roleAtt != null)
                 {
-                    _context.Users.Update(userAtt);
+                    _context.Roles.Update(roleAtt);
                     _context.SaveChanges();
-                    return Ok("Usuário editado com sucesso!");
+                    return Ok("Role editada com sucesso!");
                 }
-                return Ok(userAtt);
+                else
+                {
+                    return Ok("Role não encontrada");
+                }                
             }
             catch (Exception ex)
             {
@@ -112,29 +109,45 @@ namespace Veiculos.Controllers
             }
         }
 
-        // DELETE api/<UserController>/5
+
+        //    // Retrieve all the Users
+        //    foreach (var user in userManager.Users)
+        //    {
+        //        // If the user is in this role, add the username to
+        //        // Users property of EditRoleViewModel. This model
+        //        // object is then passed to the view for display
+        //        if (await userManager.IsInRoleAsync(user, role.Name))
+        //        {
+        //            model.Users.Add(user.UserName);
+        //        }
+        //    }
+
+        //    return View(model);
+        //}
+
         /// <summary>
-        /// Deletar usuário.
+        /// Deletar role.
         /// </summary>
         [HttpDelete("{id}")]
         //[Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
-        {           
+        {
             try
             {
-                var user = _context.Users.Where(u => u.Id == id).Single();
-                if (user != null)
+                var role = _context.Roles.Where(u => u.Id == id).Single();
+                if (role != null)
                 {
-                    _context.Users.Remove(user);
+                    _context.Roles.Remove(role);
                     _context.SaveChanges();
-                    return Ok("Usuário deletado com sucesso!");
+                    return Ok("Role deletada com sucesso!");
                 }
             }
             catch (Exception ex)
             {
                 return BadRequest($"Erro: {ex}");
             }
-        return BadRequest("Usuário não encontrado.");           
+            return BadRequest("Role não encontrada.");
         }
+
     }
 }

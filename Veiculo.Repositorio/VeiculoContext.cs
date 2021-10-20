@@ -14,5 +14,15 @@ namespace Veiculo.Repositorio
         public DbSet<Carro> Carros { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UsersRoles { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserRole>(entity => //CHAVE COMPOSTA
+            {
+                entity.HasKey(e => new { e.UserId, e.RoleId }); //a chave é composta de e.UserId e e.RoleId
+            });
+        }
     }
 }

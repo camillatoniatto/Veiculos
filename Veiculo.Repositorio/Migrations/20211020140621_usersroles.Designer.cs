@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Veiculo.Repositorio;
 
 namespace Veiculo.Repositorio.Migrations
 {
     [DbContext(typeof(VeiculoContext))]
-    partial class VeiculoContextModelSnapshot : ModelSnapshot
+    [Migration("20211020140621_usersroles")]
+    partial class usersroles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,8 +63,6 @@ namespace Veiculo.Repositorio.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CarroId");
-
                     b.ToTable("Reservas");
                 });
 
@@ -107,9 +107,6 @@ namespace Veiculo.Repositorio.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Selected")
-                        .HasColumnType("bit");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
@@ -117,34 +114,23 @@ namespace Veiculo.Repositorio.Migrations
                     b.ToTable("UsersRoles");
                 });
 
-            modelBuilder.Entity("Veiculo.Dominio.Reserva", b =>
-                {
-                    b.HasOne("Veiculo.Dominio.Carro", "Carro")
-                        .WithMany()
-                        .HasForeignKey("CarroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Carro");
-                });
-
             modelBuilder.Entity("Veiculo.Dominio.UserRole", b =>
                 {
-                    b.HasOne("Veiculo.Dominio.Role", "Role")
+                    b.HasOne("Veiculo.Dominio.Role", "RoleName")
                         .WithMany("UsersRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Veiculo.Dominio.User", "User")
+                    b.HasOne("Veiculo.Dominio.User", "Usuario")
                         .WithMany("UsersRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("RoleName");
 
-                    b.Navigation("User");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Veiculo.Dominio.Role", b =>

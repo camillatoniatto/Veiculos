@@ -4,12 +4,10 @@ using System.Text;
 
 namespace Veiculo.Dominio
 {
-    public class User
+    public class Role
     {
         public int Id { get; set; }
-        public string Usuario { get; set; }
-        public string Senha { get; set; }
-        //public string Role { get; set; }
+        public string RoleName { get; set; }
         private List<UserRole> UsersRoles { get; set; }
     }
 }

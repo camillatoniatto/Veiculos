@@ -11,5 +11,7 @@ namespace Veiculo.Dominio
         public DateTime DtInicio { get; set; }
         public DateTime DtFim { get; set; }
         public int CarroId { get; set; }
+        private Carro Carro { get; set; }
+        
     }
 }
