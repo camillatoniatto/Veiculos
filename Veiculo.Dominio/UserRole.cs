@@ -11,6 +11,6 @@ namespace Veiculo.Dominio
         //public string Usuario { get; set; }
         private User User { get; set; }
         private Role Role { get; set; }
-        public bool Selected { get; set; } //determine if the user is selected to be a member of the role.
+        //public bool Selected { get; set; } //determine if the user is selected to be a member of the role.
     }
 }

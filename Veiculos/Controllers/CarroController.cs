@@ -13,6 +13,7 @@ namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "manager,mechanic,support,client")]
     public class CarroController : ControllerBase
     {
         private readonly VeiculoContext _context;      
@@ -24,9 +25,10 @@ namespace Veiculos.Controllers
         // GET: api/<CarroController>
         /// <summary>
         /// Obter todos os carros.
-        /// </summary>               
+        /// </summary>                       
         [HttpGet]
-        [Authorize(Roles = "manager,mechanic,support")]
+        [Authorize(Roles = "manager,mechanic,support,client")]
+        //[AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             try

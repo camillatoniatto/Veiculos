@@ -26,7 +26,7 @@ namespace Veiculos.Controllers
         /// Obter todas as reservas.
         /// </summary>  
         [HttpGet]
-        [Authorize(Roles = "manager,employee,support")]
+        [Authorize(Roles = "manager,employee,support,client")]
         public async Task<IActionResult> Get()
         {
             try

@@ -8,6 +8,6 @@ namespace Veiculo.Dominio
     {
         public int Id { get; set; }
         public string RoleName { get; set; }
-        private List<UserRole> UsersRoles { get; set; }
+        protected List<UserRole> UsersRoles { get; set; }
     }
 }

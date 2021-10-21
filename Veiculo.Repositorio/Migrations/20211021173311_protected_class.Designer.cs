@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Veiculo.Repositorio;
 
 namespace Veiculo.Repositorio.Migrations
 {
     [DbContext(typeof(VeiculoContext))]
-    partial class VeiculoContextModelSnapshot : ModelSnapshot
+    [Migration("20211021173311_protected_class")]
+    partial class protected_class
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,6 +106,9 @@ namespace Veiculo.Repositorio.Migrations
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Selected")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserId", "RoleId");
 

@@ -10,7 +10,7 @@ namespace Veiculo.Dominio
 {
     public static class ServiceToken
     {
-        public static string GenerateToken(User user)
+        public static string GenerateToken(User user, IEnumerable<string> role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -19,7 +19,8 @@ namespace Veiculo.Dominio
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Usuario.ToString()),
-                    //new Claim(ClaimTypes.Role, user.Role.ToString())
+                    //new Claim(ClaimTypes.Role, role.RoleName.ToString())
+
                 }),
                 Expires = DateTime.UtcNow.AddHours(5),
                 SigningCredentials =
@@ -27,6 +28,13 @@ namespace Veiculo.Dominio
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
+            
+
+            foreach (var item in role)
+            {
+                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, item));
+            }
+            
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }

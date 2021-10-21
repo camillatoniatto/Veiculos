@@ -32,6 +32,7 @@ namespace Veiculos.Controllers
             {
                 var users = await _context.Users.ToListAsync();
                 //users.Senha = "";
+                
                 return Ok(users);
             }
             catch (Exception ex)

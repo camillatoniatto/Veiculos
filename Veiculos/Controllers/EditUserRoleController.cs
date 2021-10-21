@@ -20,6 +20,26 @@ namespace Veiculos.Controllers
             _context = context;
         }
 
+        ///// <summary>
+        ///// Obter todas as relações.
+        ///// </summary>               
+        //[HttpGet]
+        ////[Authorize(Roles = "manager")]
+        //public async Task<IActionResult> Get()
+        //{
+        //    try
+        //    {
+        //        var usersroles = await _context.UsersRoles.ToListAsync();
+        //        //users.Senha = "";
+
+        //        return Ok(usersroles);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest($"Erro: {ex}");
+        //    }
+        //}
+
         /// <summary>
         /// Nova relação user e role.
         /// </summary>

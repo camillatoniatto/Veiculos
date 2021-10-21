@@ -10,6 +10,6 @@ namespace Veiculo.Dominio
         public string Usuario { get; set; }
         public string Senha { get; set; }
         //public string Role { get; set; }
-        private List<UserRole> UsersRoles { get; set; }
+        protected List<UserRole> UsersRoles { get; set; }
     }
 }
