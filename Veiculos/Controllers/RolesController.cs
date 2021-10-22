@@ -25,7 +25,7 @@ namespace Veiculos.Controllers
         /// Obter todas as roles.
         /// </summary>               
         [HttpGet]
-        //[Authorize(Roles = "manager")]
+        [Authorize(Roles = "manager,HR")]
         public async Task<IActionResult> Get()
         {
             try
@@ -43,7 +43,7 @@ namespace Veiculos.Controllers
         /// Obter uma role específica por ID.
         /// </summary>              
         [HttpGet("{id:int}")]
-        //[Authorize(Roles = "manager,support")]
+        [Authorize(Roles = "manager,HR")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -61,7 +61,7 @@ namespace Veiculos.Controllers
         /// Cadastrar role.
         /// </summary>        
         [HttpPost]
-        //[Authorize(Roles = "manager,support")]
+        [Authorize(Roles = "manager,HR")]
         public ActionResult Post(Role model)
         {
             try
@@ -80,7 +80,7 @@ namespace Veiculos.Controllers
         /// Alterar role.
         /// </summary>         
         [HttpPut("{id}")]
-        //[Authorize(Roles = "manager,support")]
+        [Authorize(Roles = "manager,HR")]
         public async Task<IActionResult> Put(int id, Role model)
         {
             try
@@ -129,7 +129,7 @@ namespace Veiculos.Controllers
         /// Deletar role.
         /// </summary>
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "manager")]
+        [Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
         {
             try

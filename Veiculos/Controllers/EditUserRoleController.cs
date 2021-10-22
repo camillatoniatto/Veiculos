@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "manager,HR")]
     public class EditUserRoleController : ControllerBase
     {
         private readonly VeiculoContext _context;
@@ -122,7 +124,6 @@ namespace Veiculos.Controllers
         /// Deletar relação.
         /// </summary>
         [HttpDelete]
-        //[Authorize(Roles = "manager")]
         public ActionResult Delete(int userid, int roleid)
         {
             try

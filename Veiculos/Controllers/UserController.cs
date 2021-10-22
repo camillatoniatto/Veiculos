@@ -12,6 +12,7 @@ namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "manager,HR")]
     public class UserController : ControllerBase
     {
         private readonly VeiculoContext _context;
@@ -25,7 +26,6 @@ namespace Veiculos.Controllers
         /// Obter todos os usuários.
         /// </summary>               
         [HttpGet]
-        //[Authorize(Roles = "manager")]
         public async Task<IActionResult> Get()
         {
             try
@@ -46,7 +46,6 @@ namespace Veiculos.Controllers
         /// Obter um usuário específico por ID.
         /// </summary>              
         [HttpGet("{id:int}")] //delimita a rota, da erro 404 se colocar um valor q não seja int
-        //[Authorize(Roles = "manager,support")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -66,7 +65,6 @@ namespace Veiculos.Controllers
         /// Cadastrar usuário.
         /// </summary>        
         [HttpPost]
-        //[Authorize(Roles = "manager,support")]
         public ActionResult Post(User model)
         {
             try
@@ -86,7 +84,6 @@ namespace Veiculos.Controllers
         /// Alterar usuário.
         /// </summary>         
         [HttpPut("{id}")]
-        //[Authorize(Roles = "manager,support")]
         public async Task<IActionResult> Put(int id, User model)
         {
             try
@@ -118,7 +115,6 @@ namespace Veiculos.Controllers
         /// Deletar usuário.
         /// </summary>
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
         {           
             try

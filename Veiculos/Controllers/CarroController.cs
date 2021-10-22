@@ -28,7 +28,6 @@ namespace Veiculos.Controllers
         /// </summary>                       
         [HttpGet]
         [Authorize(Roles = "manager,mechanic,support,client")]
-        //[AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             try
@@ -99,21 +98,6 @@ namespace Veiculos.Controllers
                 //atualiza o carro no banco de dados
                 var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
                 var carroAtt = new Carro()
-
-
-                /*
-                foreach (var item in model)
-                {
-                    if (item != null)
-                    {
-                        carroAtt.Add(item);
-                    }
-                    else
-                    {
-                        carroAtt.Add(item.carro);
-                    }
-                }*/
-
 
                 {
                     Id = carro.Id,
