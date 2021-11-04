@@ -12,7 +12,7 @@ namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "manager,HR")]
+    //[Authorize(Roles = "manager,HR")]
     public class EditUserRoleController : ControllerBase
     {
         private readonly VeiculoContext _context;

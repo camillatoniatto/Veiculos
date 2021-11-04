@@ -26,7 +26,7 @@ namespace Veiculos.Controllers
         /// Obter todas as reservas.
         /// </summary>  
         [HttpGet]
-        [Authorize(Roles = "manager,employee,support,client")]
+        //[Authorize(Roles = "manager,employee,support,client")]
         public async Task<IActionResult> Get()
         {
             try
@@ -45,7 +45,7 @@ namespace Veiculos.Controllers
         /// Obter uma reserva específica por ID.
         /// </summary>    
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "manager,employee,support")]
+        //[Authorize(Roles = "manager,employee,support")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -64,7 +64,7 @@ namespace Veiculos.Controllers
         /// Cadastrar reserva.
         /// </summary>   
         [HttpPost]
-        [Authorize(Roles = "manager,employee,support")]
+        //[Authorize(Roles = "manager,employee,support")]
         public async Task<IActionResult> Post(Reserva model)
         {
             if (model.DtInicio < model.DtFim)
@@ -105,7 +105,7 @@ namespace Veiculos.Controllers
         /// Alterar reserva.
         /// </summary> 
         [HttpPut("{id}")]
-        [Authorize(Roles = "manager,employee")]
+        //[Authorize(Roles = "manager,employee")]
         public async Task<IActionResult> Put(int id, Reserva model)
         {
             if (model.DtInicio < model.DtFim)
@@ -149,7 +149,7 @@ namespace Veiculos.Controllers
         /// Deletar reserva.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "manager")]
+        //[Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
         {
             try

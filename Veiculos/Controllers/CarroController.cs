@@ -13,7 +13,7 @@ namespace Veiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "manager,mechanic,support,client")]
+    //[Authorize(Roles = "manager,mechanic,support,client")]
     public class CarroController : ControllerBase
     {
         private readonly VeiculoContext _context;      
@@ -27,7 +27,7 @@ namespace Veiculos.Controllers
         /// Obter todos os carros.
         /// </summary>                       
         [HttpGet]
-        [Authorize(Roles = "manager,mechanic,support,client")]
+        //[Authorize(Roles = "manager,mechanic,support,client")]
         public async Task<IActionResult> Get()
         {
             try
@@ -46,7 +46,7 @@ namespace Veiculos.Controllers
         /// Obter um carro específico por ID.
         /// </summary>              
         [HttpGet("{id:int}")] //delimita a rota, da erro 404 se colocar um valor q não seja int
-        [Authorize(Roles = "manager,mechanic,support")]
+        //[Authorize(Roles = "manager,mechanic,support")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -68,7 +68,7 @@ namespace Veiculos.Controllers
         /// Cadastrar carro.
         /// </summary>        
         [HttpPost]
-        [Authorize(Roles = "manager,mechanic,support")]
+        //[Authorize(Roles = "manager,mechanic,support")]
         public ActionResult Post(Carro model)
         {
             try
@@ -90,7 +90,7 @@ namespace Veiculos.Controllers
         /// Alterar carro.
         /// </summary>         
         [HttpPut("{id}")]
-        [Authorize(Roles = "manager,mechanic")]
+        //[Authorize(Roles = "manager,mechanic")]
         public async Task<IActionResult> Put(int id, Carro model)
         {
             try
@@ -126,7 +126,7 @@ namespace Veiculos.Controllers
         /// Deletar carro.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "manager")]
+        //[Authorize(Roles = "manager")]
         public ActionResult Delete(int id)
         {
             var listaReservas = _context.Reservas.Where(d => d.CarroId == id).ToList();
