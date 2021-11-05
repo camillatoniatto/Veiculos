@@ -12,26 +12,26 @@ namespace Veiculos
     public class HangfireLogic
     {
 
-        public void RunNow()
+        public void RunNow(string message)
         {
-            BackgroundJob.Enqueue<HangfireModule>(x => x.PrintToConsole());
+            BackgroundJob.Enqueue<HangfireModule>(x => x.Execute(message));
         }
 
-
-        public void RunOnSchedule()
+        public void RunOnSchedule(string message)
         {
-            RecurringJob.AddOrUpdate<HangfireModule>(x => x.PrintToConsole(), "* * * * *", TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate<HangfireModule>(x => x.Execute(message), "* * * * *", TimeZoneInfo.Local);
         }
 
-        public void RunOnScheduleIded()
+        public void RunOnScheduleIded(string message)
         {
-            RecurringJob.AddOrUpdate<HangfireModule>("testeId", x => x.PrintToConsole(), "* * * * *", TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate<HangfireModule>("testeId", x => x.Execute(message), "* * * * *", TimeZoneInfo.Local);
         }
 
         public void Remove()
         {
             RecurringJob.RemoveIfExists("testeId");
         }
+
 
     }
 
@@ -48,11 +48,11 @@ namespace Veiculos
             });
         }
 
-        public async Task PrintToConsole()
+        public async Task Execute(string message)
         {
             await Task.Run(() =>
             {
-                Console.WriteLine("teste");
+                Console.WriteLine(message);
             });
         }
 
