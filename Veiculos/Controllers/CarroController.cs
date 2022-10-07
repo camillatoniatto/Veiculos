@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Veiculo.Dominio;
 using Veiculo.Repositorio;
+using Veiculos.ViewModels;
 
 namespace Veiculos.Controllers
 {
@@ -69,12 +70,19 @@ namespace Veiculos.Controllers
         /// </summary>        
         [HttpPost]
         //[Authorize(Roles = "manager,mechanic,support")]
-        public ActionResult Post(Carro model)
+        public ActionResult Post(CreateCarroViewModel model)
         {
             try
             {
                 //adiciona o carro no banco de dados
-                _context.Carros.Add(model);
+                var newCar = new Carro()
+                {
+                    Modelo = model.Modelo,
+                    Ano = model.Ano,
+                    Placa = model.Placa,
+                    Estado = model.Estado
+                };
+                _context.Carros.Add(newCar);
                 _context.SaveChanges();
                 return Ok("Ok");
             }
@@ -98,7 +106,6 @@ namespace Veiculos.Controllers
                 //atualiza o carro no banco de dados
                 var carro = await _context.Carros.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
                 var carroAtt = new Carro()
-
                 {
                     Id = carro.Id,
                     Modelo = model.Modelo != null ? model.Modelo : carro.Modelo,

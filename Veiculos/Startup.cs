@@ -36,7 +36,7 @@ namespace Veiculos
         {
                         
             services.AddCors();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             // === DbContext ===
             services.AddDbContext<VeiculoContext>(options => //recebe o options do VeiculoContext.cs
@@ -115,7 +115,6 @@ namespace Veiculos
                 UseRecommendedIsolationLevel = true,
                 DisableGlobalLocks = true
             }));
-
 
             services.AddHangfireServer();
 

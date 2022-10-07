@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Veiculo.Dominio;
 using Veiculo.Repositorio;
+using Veiculos.ViewModels;
 
 namespace Veiculos.Controllers
 {
@@ -31,8 +32,13 @@ namespace Veiculos.Controllers
         {
             try
             {
-                var reserva = await _context.Reservas.ToListAsync();
-                return Ok(reserva);
+                var reservas = await _context.Reservas.ToListAsync();
+                var list = new List<ReservasViewModel>();
+                foreach (var reserva in reservas)
+                {
+                    list.Add(new ReservasViewModel(reserva.Id.ToString(), reserva.DtInicio.ToString("g"), reserva.DtFim.ToString("g"), reserva.CarroId.ToString()));
+                }
+                return Ok(list);
             }
             catch (Exception ex)
             {
@@ -84,7 +90,13 @@ namespace Veiculos.Controllers
                     {
                         try
                         {
-                            _context.Reservas.Add(model);
+                            var newReserva = new Reserva()
+                            {
+                                DtInicio = model.DtInicio,
+                                DtFim = model.DtFim,
+                                CarroId = model.CarroId
+                            };
+                            _context.Reservas.Add(newReserva);
                             _context.SaveChanges();
                             return Ok("Reserva feita com sucesso!");
                         }
